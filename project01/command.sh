@@ -59,16 +59,16 @@ sudo iptables -P OUTPUT ACCEPT
 # -------------------- #
 # WAN Connectivity
 # host to WAN -------- #
-ping [WAN PC IP]
+ping 8.8.8.8
 # FINISHED
 # ----- FINISHED ----- #
 
 # entry to WAN ------- #
-ping [WAN PC IP]
+ping 8.8.8.8
 # ----- FINISHED ----- #
 
 # playground to WAN -- #
-ping [WAN PC IP]
+ping 8.8.8.8
 # ----- FINISHED ----- #
 
 # nuclear to WAN ----- #
@@ -87,7 +87,7 @@ sudo iptables -t nat -A POSTROUTING -o enp0s3 -j MASQUERADE
 # nuclear
 sudo ip route add default via 192.168.131.1
 
-ping [WAN PC IP]
+ping 8.8.8.8
 # ----- FINISHED ----- #
 
 # SSH
