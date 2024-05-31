@@ -229,8 +229,77 @@ show etherchannel summary
 
 # -------------------- #
 # ACLs
+ip access-list standard Outgoing
+ deny 140.113.10.0 0.0.0.255
+ permit any
 
-# -------------------- #
+ip access-list standard Incoming
+ deny 192.168.0.0 0.0.255.255
+ deny 10.0.0.0 0.255.255.255
+ permit any
+
+access-list 10 permit 140.113.2.128 0.0.0.127
+access-list 10 permit 140.113.10.0 0.0.0.255
+
+access-list 20 permit 140.113.2.128 0.0.0.63
+access-list 20 permit 140.113.10.0 0.0.0.255
+
+access-list 30 permit host 140.113.10.1
+
+access-list 100 permit tcp any any eq 80
+access-list 100 permit tcp any any eq 443
+access-list 100 permit ip 140.113.2.128 0.0.0.127 any
+
+access-list 110 deny tcp any any eq 80
+access-list 110 deny tcp any any eq 443
+access-list 110 permit ip any any
+
+# Core-1
+interface Fa0/22
+ ip access-group Outgoing out
+ ip access-group Incoming in
+
+interface vlan10
+ ip access-group 20 in
+
+interface vlan20
+ ip access-group 10 in
+
+interface vlan30
+ ip access-group 100 in
+
+interface vlan316
+ ip access-group 110 in
+
+interface vlan324
+ ip access-group 110 in
+
+line vty 0 15
+ access-class 30 in
+
+# Core-2
+interface Fa0/23
+ ip access-group Outgoing out
+ ip access-group Incoming in
+
+interface vlan10
+ ip access-group 20 in
+
+interface vlan20
+ ip access-group 10 in
+
+interface vlan30
+ ip access-group 100 in
+
+interface vlan316
+ ip access-group 110 in
+
+interface vlan324
+ ip access-group 110 in
+
+line vty 0 15
+ access-class 30 in
+# ----- FINISHED ----- #
 
 # -------------------- #
 # OSPF
@@ -252,6 +321,8 @@ interface Fa0/22
 router ospf 10
  network 140.113.69.0 0.0.0.7 area 0
  network 140.113.69.8 0.0.0.7 area 0
+ network 140.113.16.0 0.0.0.255 area 0
+ network 140.113.24.0 0.0.0.255 area 0
  exit
 
 # Core-2
@@ -385,5 +456,20 @@ interface vlan 30
 
 # -------------------- #
 # GRE tunnel
+# CHT
+interface Tunnel69
+ ip address 192.168.88.69 255.255.255.252
+ tunnel source GigabitEthernet0/0/0
+ tunnel destination 140.113.69.3
 
-# -------------------- #
+# NYCU-IT
+interface Tunnel69
+ ip address 192.168.88.70 255.255.255.252
+ tunnel source GigabitEthernet0/0/0
+ tunnel destination 140.113.69.9
+
+ip route 0.0.0.0 0.0.0.0 192.168.88.69
+
+router ospf 10
+ default-information originate
+# ----- FINISHED ----- #
