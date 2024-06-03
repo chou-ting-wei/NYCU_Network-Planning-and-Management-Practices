@@ -461,15 +461,24 @@ interface Tunnel69
  ip address 192.168.88.69 255.255.255.252
  tunnel source GigabitEthernet0/0/0
  tunnel destination 140.113.69.3
+ tunnel mode gre ip
 
 # NYCU-IT
 interface Tunnel69
  ip address 192.168.88.70 255.255.255.252
  tunnel source GigabitEthernet0/0/0
  tunnel destination 140.113.69.9
+ tunnel mode gre ip
 
 ip route 0.0.0.0 0.0.0.0 192.168.88.69
 
 router ospf 10
  default-information originate
 # ----- FINISHED ----- #
+
+show run
+show ip interface brief
+show vlan brief
+show etherchannel summary
+show ip ospf neighbor
+show access-lists
